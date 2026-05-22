@@ -1,3 +1,0 @@
-/home/rank/projects/personal/ai-image-forensics-engine/build/CMakeFiles/forensics_engine.dir
-/home/rank/projects/personal/ai-image-forensics-engine/build/CMakeFiles/edit_cache.dir
-/home/rank/projects/personal/ai-image-forensics-engine/build/CMakeFiles/rebuild_cache.dir

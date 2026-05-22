@@ -1,0 +1,18 @@
+# Build artifacts
+build/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+forensics_engine
+
+# Generated outputs
+data/NewYork.jpg
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+
+# VS Code local settings
+.vscode/
+
