@@ -41,6 +41,23 @@ int main(int argc, char** argv){
     double entropy = BasicStats::computeEntropy(buckets, totalPixels);
     EdgeStats edgeStats = EdgeAnalysis::computeEdgeStats(gray);
 
+    cv::Mat laplacian = EdgeAnalysis::laplacianFilter(gray);
+
+    // Convert signed Laplacian values to absolute values
+    cv::Mat laplacianAbs = cv::abs(laplacian);
+
+    // Normalize values into 0-255 so the image is viewable
+    cv::Mat laplacianVisual;
+    cv::normalize(laplacianAbs, laplacianVisual, 0, 255, cv::NORM_MINMAX);
+
+    // Convert from CV_64F to CV_8U because imwrite expects normal image format
+    laplacianVisual.convertTo(laplacianVisual, CV_8U);
+
+    // Save the output image
+    cv::imwrite("../results/laplacian_output.jpg", laplacianVisual);
+
+    std::cout << "Saved Laplacian image to ../results/laplacian_output.jpg\n";
+
 
     std::cout << "\nBrightness Stats\n";
     std::cout << "Average: " << stats.average << "\n";

@@ -25,7 +25,7 @@
 
 # Phase 3 - Edge & Gradient Analysis
 - [X] Implement Sobel filter
-- [ ] Implement Laplacian filter
+- [X] Implement Laplacian filter
 - [ ] Implement Canny edge detection
 - [X] Measure edge density
 - [X] Measure image sharpness

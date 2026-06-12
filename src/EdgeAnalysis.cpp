@@ -57,15 +57,49 @@ cv::Mat EdgeAnalysis::sobelMagnitude(const cv::Mat& gray){
     return magnitudeImage;  
 }
 
+cv::Mat EdgeAnalysis::laplacianFilter(const cv::Mat& gray) {
+    int laplacianKernel[3][3] = {
+        {0,  1, 0},
+        {1, -4, 1},
+        {0,  1, 0}
+    };
+
+    cv::Mat laplacianImage = cv::Mat::zeros(gray.rows, gray.cols, CV_64F);
+
+    for (int row = 1; row < gray.rows - 1; row++) {
+        for (int col = 1; col < gray.cols - 1; col++) {
+            double sum = 0.0;
+
+            for (int i = -1; i <= 1; i++) {
+                for (int j = -1; j <= 1; j++) {
+                    int pixel = gray.at<uchar>(row + i, col + j);
+                    sum += pixel * laplacianKernel[i + 1][j + 1];
+                }
+            }
+
+            laplacianImage.at<double>(row, col) = sum;
+        }
+    }
+
+    return laplacianImage;
+}
+
 
 EdgeStats EdgeAnalysis::computeEdgeStats(const cv::Mat& gray) {
     cv::Mat magnitudeImage = sobelMagnitude(gray);
+    cv::Mat laplacianImage = laplacianFilter(gray);
 
+    double laplacianSum = 0.0;
+    double laplacianSquaredSum = 0.0;
+    int laplacianPixels = 0;
     double threshold = 50.0;
 
     int edgePixels = 0;
     int totalPixels = 0;
     double gradientSum = 0.0;
+
+
+    
 
     for (int row = 1; row < magnitudeImage.rows - 1; row++) {
         for (int col = 1; col < magnitudeImage.cols - 1; col++) {
@@ -92,9 +126,26 @@ EdgeStats EdgeAnalysis::computeEdgeStats(const cv::Mat& gray) {
     stats.edgeDensity = static_cast<double>(edgePixels) / totalPixels;
     stats.averageGradient = gradientSum / totalPixels;
 
-    // For now, sharpness can be average gradient.
-    // Later, replace this with Laplacian variance.
-    stats.sharpness = stats.averageGradient;
+    // Sharpness is measured using variance of the Laplacian.
+    // Higher variance usually means sharper image detail.
+    for (int row = 1; row < laplacianImage.rows - 1; row++) {
+        for (int col = 1; col < laplacianImage.cols - 1; col++) {
+            double value = laplacianImage.at<double>(row, col);
+
+            laplacianSum += value;
+            laplacianSquaredSum += value * value;
+            laplacianPixels++;
+        }
+    }
+
+    if (laplacianPixels == 0) {
+        stats.sharpness = 0.0;
+    } else {
+        double mean = laplacianSum / laplacianPixels;
+        double variance = (laplacianSquaredSum / laplacianPixels) - (mean * mean);
+
+        stats.sharpness = variance;
+    }
 
     return stats;
 }
