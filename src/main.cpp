@@ -58,6 +58,14 @@ int main(int argc, char** argv){
 
     std::cout << "Saved Laplacian image to ../results/laplacian_output.jpg\n";
 
+    // Canny edge detection output
+    cv::Mat canny = EdgeAnalysis::cannyEdge(gray, 100.0, 200.0);
+    cv::imwrite("../results/canny_output.jpg", canny);
+    int cannyEdges = cv::countNonZero(canny);
+    double cannyEdgeDensity = static_cast<double>(cannyEdges) / totalPixels;
+    std::cout << "Saved Canny image to ../results/canny_output.jpg\n";
+    std::cout << "Canny Edge Density: " << cannyEdgeDensity << "\n";
+
 
     std::cout << "\nBrightness Stats\n";
     std::cout << "Average: " << stats.average << "\n";

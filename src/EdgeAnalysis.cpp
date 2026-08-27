@@ -85,6 +85,20 @@ cv::Mat EdgeAnalysis::laplacianFilter(const cv::Mat& gray) {
 }
 
 
+cv::Mat EdgeAnalysis::cannyEdge(const cv::Mat& gray, double lowThreshold, double highThreshold) {
+    cv::Mat gray8;
+    if (gray.type() != CV_8U) {
+        gray.convertTo(gray8, CV_8U);
+    } else {
+        gray8 = gray;
+    }
+
+    cv::Mat edges;
+    cv::Canny(gray8, edges, lowThreshold, highThreshold);
+    return edges;
+}
+
+
 EdgeStats EdgeAnalysis::computeEdgeStats(const cv::Mat& gray) {
     cv::Mat magnitudeImage = sobelMagnitude(gray);
     cv::Mat laplacianImage = laplacianFilter(gray);
